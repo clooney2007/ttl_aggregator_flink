@@ -10,21 +10,14 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 public class CenterRecordParserFlatMap implements FlatMapFunction<String, String> {
-//    private final Map<Long, Tuple2<Double, Double>> delayTrafficCostMap;
 
     Logger LOG = LoggerFactory.getLogger(CenterRecordParserFlatMap.class);
 
-//    CenterRecordParserFlatMap(Map<Long, Tuple2<Double, Double>> delayTrafficCostMap) {
-//        this.delayTrafficCostMap = delayTrafficCostMap;
-//    }
-
     @Override
     public void flatMap(String record, Collector<String> out){
-//        LOG.info("Center received {}", record);
         long currentTimeStamp = System.currentTimeMillis();
         EvictedRecord evictedRecordFromEdge = new EvictedRecord(record);
         long congestionDelay = (currentTimeStamp - evictedRecordFromEdge.getDepartureTimestamp()) * evictedRecordFromEdge.getNumRecordsAggregated();
-//        double congestionDelayCost = congestionDelay * this.delayTrafficCostMap.get(evictedRecordFromEdge.getAggregatedRecord().getKey()).f0;
         double unitDelayCost = evictedRecordFromEdge.getAggregatedRecord().getDelayCost() / evictedRecordFromEdge.getAggregatedRecord().getDelay();
         double congestionDelayCost = congestionDelay * unitDelayCost;
         long updatedDelay = congestionDelay + evictedRecordFromEdge.getAggregatedRecord().getDelay();

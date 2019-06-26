@@ -25,37 +25,14 @@ public class CentralAggregatorJob {
 
         System.out.println(String.format("arg0 = %s, arg1 = %s arg2 = %s arg3 = %s", args[0], args[1], args[2], args[3]));
 	    String sourceHost = args[0];
-//        int sourcePort = Integer.parseInt(args[1]);
         List<Integer> sourcePorts = Arrays
                 .stream(args[1].split(","))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         System.out.println(String.format("sourcePorts= %s", sourcePorts.toString()));
-//		String recordsFileName = args[2];
-//		double alpha = Double.parseDouble(args[3]);
-//		int optimisationType = Integer.parseInt(args[4]);
-//
-//		int delayCostType = Integer.parseInt(args[5]);
-//		double delayConstant = Double.parseDouble(args[6]);
-//		int trafficCostType = Integer.parseInt(args[7]);
-//		double trafficConstant = Integer.parseInt(args[8]);
-//
-//		double beta = Double.parseDouble(args[9]);
-//		double gamma = Double.parseDouble(args[10]);
 
 		String destinationHost = args[2];
 		int destinationPort = Integer.parseInt(args[3]);
-
-		// read the delay and traffic cost and store it in memory.
-//		Map<Long, Tuple2<Double, Double>> delayTrafficCostMap = Utils.readDelayTrafficCostCSV(
-//				recordsFileName,
-//				delayCostType,
-//				delayConstant,
-//				trafficCostType,
-//				trafficConstant,
-//				beta,
-//				gamma
-//		);
 
 		// set up the streaming execution environment
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -71,23 +48,7 @@ public class CentralAggregatorJob {
 
         DataStream<String> allSources = dataSource1.union(dataSourceList.toArray(new DataStream[dataSourceList.size()]));
 
-//        DataStream<String> dataSource2 = env.addSource(new CustomSocketTextStreamFunction(sourceHost, 9993, "\n", 0));
-//        DataStream<String> dataSource3 = env.addSource(new CustomSocketTextStreamFunction(sourceHost, 9991, "\n", 0));
-//		DataStream<String> allSources = dataSource1.union(dataSource2, dataSource3);
-
-//		DataStream<EvictedRecord> dataStream = env
-//		env
-//				.socketTextStream(sourceHost, sourcePort)
-//				.flatMap(new CenterRecordParserFlatMap(delayTrafficCostMap))
-//				.writeToSocket(destinationHost, destinationPort, new SerializationSchema<String>() {
-//					@Override
-//					public byte[] serialize(String record) {
-//						return record.getBytes();
-//					}
-//				});
 		allSources
-//				.socketTextStream(sourceHost, sourcePort)
-//                .flatMap(new CenterRecordParserFlatMap(delayTrafficCostMap))
                 .flatMap(new CenterRecordParserFlatMap())
 				.writeToSocket(destinationHost, destinationPort, new SerializationSchema<String>() {
 					@Override

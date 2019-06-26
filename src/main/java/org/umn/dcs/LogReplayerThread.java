@@ -67,10 +67,6 @@ public class LogReplayerThread implements Runnable {
             out.print(recordList.get(i).f1);
             out.flush();
             lastTimestamp = recordList.get(i).f0;
-//            System.out.println(recordList.get(i).f1);
-//            requestsSent++;
-//            if (requestsSent % 10000 == 0)
-//                System.out.println(String.format("Number of requests sent = %s", requestsSent));
         }
         long actualDelta = System.nanoTime() - currentTime;
         System.out.println(String.format("Host: %s Time taken: %s seconds Expected time taken: %s seconds", this.host,
@@ -79,8 +75,6 @@ public class LogReplayerThread implements Runnable {
         ));
         System.out.println(String.format("Number of requests sent = %s",requestsSent));
 
-//        Thread.sleep(50000);
-//        out.println("END");
         out.close();
         try {
             socket.close();
@@ -107,10 +101,6 @@ public class LogReplayerThread implements Runnable {
             outputStream.writeUTF(message);
             outputStream.flush();
             outputStream.close();
-//            PrintWriter outMaster = new PrintWriter(masterSocket.getOutputStream(), true);
-//            outMaster.print(message);
-//            Thread.sleep(15000);
-//            outMaster.close();
             masterSocket.close();
         } catch (IOException e) {
             e.printStackTrace();

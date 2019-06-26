@@ -78,14 +78,6 @@ public class TTLCacheJobEdge {
 
 		env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);
         SingleOutputStreamOperator<EvictedRecord> dataStream;
-		// add data source
-//		DataStream<EvictedRecord> dataStream = env
-//				.addSource(new CustomSocketTextStreamFunction(sourceHost, sourcePort, "\n", 0))
-//				.flatMap(new RecordParserFlatMap(ttlMap, delayTrafficCostMap))
-//				.keyBy(new KeySelector<Record, Long>() {
-//					public Long getKey(Record record) { return record.getKey(); }
-//				})
-//				.process(new TTLCacheProcessFunction(edgeId));
 
         KeyedStream<Record, Long> keyedStream = env
                 .addSource(new CustomSocketTextStreamFunction(sourceHost, sourcePort, "\n", 0))
@@ -98,12 +90,7 @@ public class TTLCacheJobEdge {
         List<Integer> ttlCacheOptTypes = Arrays.asList(1, 2, 3, 11, 17, 23, 24);
         if(ttlCacheOptTypes.contains(optimisationType)) {
         	LOG.info("running ttl cache flink....");
-//        	if(dynamic) {
-//				System.out.println("Going dynamic....\n");
 				dataStream = keyedStream.process(new DynamicTTLCacheProcessFunction(edgeId, startTTL, ttlUpdateInterval, alpha, exp_weight, dynamic, outputTag));
-//			}
-//			else
-//            	dataStream = keyedStream.process(new TTLCacheProcessFunction(edgeId));
         }
         else {
             dataStream = keyedStream.process(new PerKeyTumblingWindowProcessFunction(edgeId, outputTag));
@@ -114,7 +101,6 @@ public class TTLCacheJobEdge {
 			@Override
 			public byte[] serialize(EvictedRecord record) {
 				String result = String.format("%s\n", record.toString());
-//				LOG.info("Sending {}", result);
 				return result.getBytes();
 			}
 		});

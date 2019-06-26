@@ -94,7 +94,6 @@ public class KeyArrivalRateState {
             if(alpha == 0.0)
                 this.TTL = Constants.MAX_TTL;
             else {
-//                double ttl = (Math.sqrt(2.0 * (1 - this.alpha) * this.unitTrafficCost/ (this.alpha * this.unitDelayCost * this.arrivalRate * 1000.0)) - (1/(this.arrivalRate * 1000.0))) * 1000;
                 double ttl = 2.0 * (1.0 - this.alpha) * this.unitTrafficCost * this.arrivalRate * 1000 / (this.alpha * this.unitDelayCost);
                 if(ttl > 1.0) {
                     ttl = Math.sqrt(ttl - 1.0);
